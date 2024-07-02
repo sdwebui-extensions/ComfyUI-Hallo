@@ -23,12 +23,12 @@ if os.path.isfile("%s/Hallo.pth" % (site_packages_root)):
     print("!!!Hallo path was added to " + "%s/Hallo.pth" % (site_packages_root) 
     + "\n if meet No module named 'hallo' error,please restart comfyui")
 
-from huggingface_hub import snapshot_download
+# from huggingface_hub import snapshot_download
 
-if not os.path.isfile(os.path.join(now_dir,"pretrained_models","hallo","net.pth")):
-    snapshot_download(repo_id="fudan-generative-ai/hallo",local_dir=os.path.join(now_dir,"pretrained_models"))
-else:
-    print("Hallo use cache models,make sure your 'pretrained_models' complete")
+# if not os.path.isfile(os.path.join(now_dir,"pretrained_models","hallo","net.pth")):
+#     snapshot_download(repo_id="fudan-generative-ai/hallo",local_dir=os.path.join(now_dir,"pretrained_models"))
+# else:
+#     print("Hallo use cache models,make sure your 'pretrained_models' complete")
     
 from .nodes import PreViewVideo,HalloNode,LoadImagePath, LoadAudioPath
 WEB_DIRECTORY = "./web"

@@ -8,7 +8,8 @@ from Hallo.scripts.inference import inference_process
 now_dir = os.path.dirname(os.path.abspath(__file__))
 input_dir = folder_paths.get_input_directory()
 output_dir = folder_paths.get_output_directory()
-ckpt_dir = os.path.join(now_dir,"pretrained_models")
+ckpt_dir = os.path.join(folder_paths.models_dir,"hallo")
+cache_dir = "/stable-diffusion-cache/models/hallo"
 print(ckpt_dir)
 
 class HalloNode:
@@ -54,10 +55,14 @@ class HalloNode:
         # yaml_data['driving_audio'] = driving_audio
         yaml_data['save_path'] = os.path.join(output_dir, "hallo")
         yaml_data['audio_ckpt_dir'] = os.path.join(ckpt_dir,"hallo")
+        if not os.path.exists(yaml_data['audio_ckpt_dir']) and os.path.exists('/stable-diffusion-cache/models'):
+            yaml_data['audio_ckpt_dir'] = os.path.join(cache_dir, "hallo")
         if sd_model is not None and "safetensors" not in sd_model:
             base_model_path = folder_paths.get_full_path("diffusers", sd_model)
         else:
             base_model_path = os.path.join(ckpt_dir,"stable-diffusion-v1-5")
+            if not os.path.exists(base_model_path) and os.path.exists(cache_dir):
+                base_model_path = os.path.join(cache_dir, "stable-diffusion-v1-5")
 
         yaml_data['base_model_path'] = base_model_path
         print(yaml_data['base_model_path'])
@@ -66,13 +71,20 @@ class HalloNode:
         yaml_data['wav2vec']['model_path'] = os.path.join(ckpt_dir,"wav2vec","wav2vec2-base-960h")
         yaml_data['audio_separator']['model_path'] = os.path.join(ckpt_dir,"audio_separator","Kim_Vocal_2.onnx")
         yaml_data['vae']['model_path'] = os.path.join(ckpt_dir,"sd-vae-ft-mse")
+        os.environ["face_landmarker"] = os.path.join(ckpt_dir,"face_analysis","models","face_landmarker_v2_with_blendshapes.task")
+        if not os.path.exists(yaml_data['motion_module_path']) and os.path.exists(cache_dir):
+            yaml_data['motion_module_path'] = os.path.join(cache_dir,"motion_module","mm_sd_v15_v2.ckpt")
+            yaml_data['face_analysis']['model_path'] = os.path.join(cache_dir,"face_analysis")
+            yaml_data['wav2vec']['model_path'] = os.path.join(cache_dir,"wav2vec","wav2vec2-base-960h")
+            yaml_data['audio_separator']['model_path'] = os.path.join(cache_dir,"audio_separator","Kim_Vocal_2.onnx")
+            yaml_data['vae']['model_path'] = os.path.join(cache_dir,"sd-vae-ft-mse")
+            os.environ["face_landmarker"] = os.path.join(cache_dir,"face_analysis","models","face_landmarker_v2_with_blendshapes.task")
 
         tmp_yaml_path = os.path.join(now_dir,'tmp.yaml')
         with open(tmp_yaml_path,'w', encoding="utf-8") as f:
             yaml.dump(data=yaml_data,stream=f,Dumper=yaml.Dumper)
 
         outfile = os.path.join(output_dir,f"hallo_{time.time_ns()}.mp4")
-        os.environ["face_landmarker"] = os.path.join(ckpt_dir,"face_analysis","models","face_landmarker_v2_with_blendshapes.task")
         cmd = f"""{python_exec} {infer_py} --config "{tmp_yaml_path}" --source_image "{source_image}" --driving_audio "{driving_audio}" --output {outfile} --pose_weight {pose_weight} --face_weight {face_weight} --lip_weight {lip_weight} --face_expand_ratio {face_expand_ratio}"""
         
         print(cmd)
