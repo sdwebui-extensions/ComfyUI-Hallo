@@ -1,9 +1,9 @@
 import os,sys
 import yaml
 import time
-import argparse
+# import argparse
 import folder_paths
-from Hallo.scripts.inference import inference_process
+# from Hallo.scripts.inference import inference_process
 
 now_dir = os.path.dirname(os.path.abspath(__file__))
 input_dir = folder_paths.get_input_directory()
