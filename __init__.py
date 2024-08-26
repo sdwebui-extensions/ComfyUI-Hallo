@@ -36,7 +36,7 @@ WEB_DIRECTORY = "./web"
 # NOTE: names should be globally unique
 NODE_CLASS_MAPPINGS = {
     "LoadAudioPath": LoadAudioPath,
-    "PreViewVideo": PreViewVideo,
+    "HalloPreViewVideo": PreViewVideo,
     "HalloNode": HalloNode,
     "LoadImagePath": LoadImagePath
 }
@@ -44,7 +44,7 @@ NODE_CLASS_MAPPINGS = {
 # A dictionary that contains the friendly/humanly readable titles for the nodes
 NODE_DISPLAY_NAME_MAPPINGS = {
     "HalloNode": "HalloNode",
-    "PreViewVideo": "PreView Video",
+    "HalloPreViewVideo": "Hallo PreView Video",
     "LoadImagePath": "LoadImagePath",
     "LoadAudio": "LoadAudioPath"
 }
